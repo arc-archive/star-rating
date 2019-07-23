@@ -1,20 +1,15 @@
 language: node_js
-node_js: 8
+node_js: stable
 sudo: required
-before_script: npm install -g polymer-cli @advanced-rest-client/wct-istanbub
 addons:
-  firefox: latest
   apt:
     sources:
     - google-chrome
     packages:
     - google-chrome-stable
-  sauce_connect: true
 script:
-- xvfb-run polymer test --module-resolution=node --npm --plugin local
-- if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test --module-resolution=node
-  --npm --plugin sauce --job-name "star-rating:${TRAVIS_BRANCH}" --build-number=${TRAVIS_BUILD_NUMBER};
-  fi
+- npm test
+- if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then npm run test:sl; fi
 env:
   global:
   - secure: Nd8SNU1MVXPxlfcbzLaTmgqAi3BrAHLxvvjTTWnuoNBiLjHaX1OZuPb9cAlVk/HeVD3uH5AvI1+IozPyUBO78YEbs1HxqWHPNaz76HBSql3Q3niPBVwVtGVx6FeNQfBkfOffs1ghurU8M18jsIElr4X/zy+hoYjnnBrWS1Qr+v7nMrK7n9bjunYIKJcpAwiDWEGq4+nibza+96e1hOUEwfS7/OoZJ8vUwcx+S/FtwNwgPm/OyUzF1Csd3PymNAZ7SDbbfpL9XOYmKyA1KPbHiP68NxR3i3DdCAQpNlrW4buA1xAWxX5GEAFCPO0Hi0Pd0skQkKdDhImDH4J9lEJE72r4PgdgMfo/XnpLGOTpZpl70pDVmxGkhGh/UiGlmHx9oX92Fe1MLZuKBekDqyy37POM1ICxUx/jDmC0wSR+TODGgEDi8juOtCU+CauOOIT5KdITg4VWDBZHNGefyDpBtYbLvk8CkG3fuy3611ZdSomd8sfSwGAvbnKrZDmw3dZkeReEak8FwSxCH/lh4pCSX2izeaqAqjvsfk2+XkmD1rLd1y/0RdPr8zrURtQ958VRrANsm7A5nDaVg7/J4DEcFxmPA0UcBH3Oq3bIsf/qz5wkycVwi95PIf8DvEpsq/nn3LxUzodnRd7jxGbq9WTHWhUD4SucvurAPkt4VV2GTeU=

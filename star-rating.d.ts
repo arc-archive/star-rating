@@ -40,6 +40,7 @@ export {StarRating};
 declare class StarRating extends HTMLElement {
   value: any;
   readonly: any;
+  onchange: any;
   connectedCallback(): void;
   disconnectedCallback(): void;
   attributeChangedCallback(name: any, oldValue: any, newValue: any): void;

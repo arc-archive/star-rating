@@ -47,44 +47,77 @@ npm install --save @advanced-rest-client/star-rating
     </script>
   </head>
   <body>
-    <star-rating value="2"></star-rating>
+    <label id="ratingLabel">My rating</label>
+    <star-rating value="2" arial-labelledby="ratingLabel"></star-rating>
+    <script>
+    {
+      document.querySelector('star-rating').onchange = (e) => {
+        console.log(`New rating is ${e.target.value}`);
+      };
+    }
+    </script>
   </body>
 </html>
 ```
 
-### In a Polymer 3 element
+### In a LitElement
 
 ```js
-import {PolymerElement, html} from './node_odules/@polymer/polymer';
-import './node_odules/@advanced-rest-client/star-rating/star-rating.js';
+import { LitElement, html } from 'lit-element';
+import '@advanced-rest-client/star-rating/star-rating.js';
 
-class SampleElement extends PolymerElement {
-  static get template() {
+class SampleElement extends LitElement {
+  static get properties() {
+    return {
+      rating: { type: Number }
+    }
+  }
+
+  _ratingChanged(e) {
+    this.rating = e.target.value;
+  }
+
+  render() {
     return html`
-    <star-rating value="2"></star-rating>
+    <star-rating .value="${this.rating}" @value-changed="${this._ratingChanged}"></star-rating>
     `;
   }
 }
 customElements.define('sample-element', SampleElement);
 ```
 
-### Installation
+### In a Polymer 3 element
+
+```js
+import { PolymerElement, html } from '@polymer/polymer';
+import '@advanced-rest-client/star-rating/star-rating.js';
+
+class SampleElement extends PolymerElement {
+  static get template() {
+    return html`
+    <star-rating value="{{rating}}"></star-rating>
+    `;
+  }
+}
+customElements.define('sample-element', SampleElement);
+```
+
+### Development
 
 ```sh
 git clone https://github.com/advanced-rest-client/star-rating
-cd api-url-editor
+cd star-rating
 npm install
-npm install -g polymer-cli
 ```
 
 ### Running the demo locally
 
 ```sh
-polymer serve --npm
-open http://127.0.0.1:<port>/demo/
+npm start
 ```
 
 ### Running the tests
+
 ```sh
-polymer test --npm
+npm test
 ```

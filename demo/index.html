@@ -6,56 +6,81 @@
 
     <title>star-rating demo</title>
 
-    <script src="../../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <style>
+      .demo {
+        max-width: 1200px;
+        width: 700px;
+        margin-bottom: 40px;
+      }
 
-    <script type="module">
-      import '../../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
-      import '../../../@polymer/iron-demo-helpers/demo-snippet.js';
-    </script>
+      .card {
+        background-color: #fff;
+        padding: 12px;
+        margin: 20px;
+        box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14),
+                    0 1px 8px 0 rgba(0, 0, 0, 0.12),
+                    0 3px 3px -2px rgba(0, 0, 0, 0.4);
+      }
 
-    <script type="module" src="../star-rating.js"></script>
+      body.styled {
+        --primary-color: #00A2DF;
+      }
 
-    <custom-style>
-      <style is="custom-style" include="demo-pages-shared-styles">
-      </style>
-    </custom-style>
+      body.styled.dark {
+        background-color: #424242;
+        height: 100vh;
+        color: #fff;
+        --primary-color: #2196f3;
+        --primary-text-color: #fff;
+      }
+
+      body.styled.dark .card {
+        background-color: #424242;
+      }
+
+      body.styled .theme-blue {
+        --star-rating-unselected-color: #BBDEFB;
+        --star-rating-selected-color: #1565C0;
+        --star-rating-active-color: #2196F3;
+      }
+    </style>
   </head>
-  <body>
+  <body class="styled">
     <div class="vertical-section-container centered">
       <h3>Rating with value</h3>
-      <demo-snippet>
+      <arc-demo-helper>
         <template>
           <star-rating value="3"></star-rating>
         </template>
-      </demo-snippet>
+      </arc-demo-helper>
 
       <h3>Readonly</h3>
-      <demo-snippet>
+      <arc-demo-helper>
         <template>
           <star-rating value="4" readonly></star-rating>
         </template>
-      </demo-snippet>
+      </arc-demo-helper>
 
       <h3>No value</h3>
-      <demo-snippet>
+      <arc-demo-helper>
         <template>
           <star-rating></star-rating>
         </template>
-      </demo-snippet>
+      </arc-demo-helper>
 
       <h3>Styled</h3>
-      <demo-snippet>
+      <arc-demo-helper>
         <template>
           <star-rating class="theme-blue" value="3"></star-rating>
-          <style>
-          .theme-blue {
-            --star-rating-unselected-color: #BBDEFB;
-            --star-rating-selected-color: #1565C0;
-            --star-rating-active-color: #2196F3;
-          }
-          </style>
         </template>
-      </demo-snippet>
+      </arc-demo-helper>
     </div>
+
+    <div class="centered actions card">
+      <h2>Options</h2>
+      <paper-toggle-button id="theme">Toggle dark theme</paper-toggle-button>
+      <paper-toggle-button checked id="styled">Toggle styles</paper-toggle-button>
+    </div>
+    <script type="module" src="./index.js"></script>
   </body>
 </html>
