@@ -74,7 +74,7 @@ export class StarRating extends HTMLElement {
       fill: var(--star-rating-active-color, #e0be25);
     }
     </style>
-    <div id="container"></div>`;
+    <div id="container" role="radiogroup"></div>`;
     return template;
   }
 
@@ -129,11 +129,7 @@ export class StarRating extends HTMLElement {
     this.__data__ = {};
     this._clickHandler = this._clickHandler.bind(this);
     this._keydownHandler = this._keydownHandler.bind(this);
-    this.__attachDom();
-  }
-
-  __attachDom() {
-    const shadow = this.attachShadow({mode: 'open'});
+    const shadow = this.attachShadow({ mode: 'open' });
     const tpl = StarRating.template;
     const clone = document.importNode(tpl.content, true);
     shadow.appendChild(clone);
@@ -183,6 +179,15 @@ export class StarRating extends HTMLElement {
           star.classList.remove('selected');
         }
       }
+      if (i === selected) {
+        if (star.getAttribute('aria-checked') !== 'true') {
+          star.setAttribute('aria-checked', 'true');
+        }
+      } else {
+        if (star.getAttribute('aria-checked') !== 'false') {
+          star.setAttribute('aria-checked', 'false');
+        }
+      }
       if (star.getAttribute('tabindex') !== String(tabindex)) {
         star.setAttribute('tabindex', String(tabindex));
       }
@@ -208,7 +213,8 @@ export class StarRating extends HTMLElement {
     svg.setAttribute('viewBox', '0 0 24 24');
     svg.setAttribute('tabindex', '0');
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    svg.setAttribute('focusable', 'false');
+    svg.setAttribute('focusable', 'true');
+    svg.setAttribute('role', 'radio');
     svg.style.cssText = 'display: block;';
     svg.innerHTML = `<g>
       <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
@@ -227,6 +233,8 @@ export class StarRating extends HTMLElement {
     if (this.readonly || e.code !== 'Space' && e.code !== 'Enter') {
       return;
     }
+    e.preventDefault();
+    e.stopPropagation();
     this._selectionFromEvent(e);
   }
 
@@ -250,7 +258,7 @@ export class StarRating extends HTMLElement {
   }
 
   _notifyValueChanged(value) {
-    this.dispatchEvent(new CustomEvent('value-changed', {detail: {value}}));
+    this.dispatchEvent(new CustomEvent('value-changed', { detail: { value } }));
   }
 
   /**
