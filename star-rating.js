@@ -124,6 +124,22 @@ export class StarRating extends HTMLElement {
     return this.__data__.readonly || false;
   }
 
+  get onchange() {
+    return this._onchange;
+  }
+
+  set onchange(value) {
+    if (this._onchange) {
+      this.removeEventListener('value-changed', this._onchange);
+    }
+    if (typeof value !== 'function') {
+      this._onchange = null;
+      return;
+    }
+    this._onchange = value;
+    this.addEventListener('value-changed', value);
+  }
+
   constructor() {
     super();
     this.__data__ = {};
