@@ -1,5 +1,4 @@
 import { fixture, assert, aTimeout } from '@open-wc/testing';
-import { a11ySuite } from '@advanced-rest-client/a11y-suite/index.js';
 import sinon from 'sinon/pkg/sinon-esm.js';
 import { click, keyDownOn } from '@polymer/iron-test-helpers/mock-interactions.js';
 import '../star-rating.js';
@@ -393,7 +392,7 @@ describe('<star-rating>', function() {
     it('normal state', async () => {
       const element = (await fixture(`<star-rating></star-rating>`));
       await aTimeout();
-      await a11ySuite('Normal state', element, {
+      await assert.isAccessible(element, {
         ignoredRules: ['aria-toggle-field-name']
       });
     });
@@ -401,7 +400,7 @@ describe('<star-rating>', function() {
     it('selected state', async () => {
       const element = (await fixture(`<star-rating value="2"></star-rating>`));
       await aTimeout();
-      await a11ySuite('Selected state', element, {
+      await assert.isAccessible(element, {
         ignoredRules: ['aria-toggle-field-name']
       });
     });
@@ -409,7 +408,7 @@ describe('<star-rating>', function() {
     it('readonly state', async () => {
       const element = (await fixture(`<star-rating readonly></star-rating>`));
       await aTimeout();
-      await a11ySuite('Readonly state', element, {
+      await assert.isAccessible(element, {
         ignoredRules: ['aria-toggle-field-name']
       });
     });
@@ -417,7 +416,7 @@ describe('<star-rating>', function() {
     it('readonly selected state', async () => {
       const element = (await fixture(`<star-rating readonly value="2"></star-rating>`));
       await aTimeout();
-      await a11ySuite('Readonly selected state', element, {
+      await assert.isAccessible(element, {
         ignoredRules: ['aria-toggle-field-name']
       });
     });
