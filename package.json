@@ -3,7 +3,8 @@
   "description": "Star rating component",
   "version": "1.0.1",
   "license": "Apache-2.0",
-  "main": "star-rating.js",
+  "main": "index.js",
+  "module": "index.js",
   "keywords": [
     "web-components",
     "rating",
