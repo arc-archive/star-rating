@@ -1,19 +1,22 @@
 import { fixture, assert, aTimeout } from '@open-wc/testing';
-import sinon from 'sinon/pkg/sinon-esm.js';
-import { click, keyDownOn } from '@polymer/iron-test-helpers/mock-interactions.js';
+import sinon from 'sinon';
+import {
+  click,
+  keyDownOn,
+} from '@polymer/iron-test-helpers/mock-interactions.js';
 import '../star-rating.js';
 
-describe('<star-rating>', function() {
+describe('<star-rating>', () => {
   async function basicFixture() {
-    return (await fixture(`<star-rating></star-rating>`));
+    return fixture(`<star-rating></star-rating>`);
   }
 
   async function selectedFixture() {
-    return (await fixture(`<star-rating value="3"></star-rating>`));
+    return fixture(`<star-rating value="3"></star-rating>`);
   }
 
   async function readonlyFixture() {
-    return (await fixture(`<star-rating readonly></star-rating>`));
+    return fixture(`<star-rating readonly></star-rating>`);
   }
 
   describe('Constructor', () => {
@@ -32,12 +35,10 @@ describe('<star-rating>', function() {
   });
 
   describe('observedAttributes()', () => {
-    [
-      'readonly',
-      'value'
-    ].forEach((attr) => {
-      it('Observes ' + attr, () => {
-        const list = window.customElements.get('star-rating').observedAttributes;
+    ['readonly', 'value'].forEach((attr) => {
+      it(`Observes ${attr}`, () => {
+        const list = window.customElements.get('star-rating')
+          .observedAttributes;
         assert.notEqual(list.indexOf(attr), -1);
       });
     });
@@ -68,7 +69,7 @@ describe('<star-rating>', function() {
       assert.equal(element.__data__.value, 0);
     });
 
-    it('Won\'t set attribute value when already set', async () => {
+    it("Won't set attribute value when already set", async () => {
       const element = await selectedFixture();
       const spy = sinon.spy(element, 'setAttribute');
       element.value = 3;
@@ -139,7 +140,7 @@ describe('<star-rating>', function() {
     let element;
     beforeEach(async () => {
       element = await basicFixture();
-      await aTimeout();
+      await aTimeout(0);
     });
 
     it('Sets __rendering', () => {
@@ -166,26 +167,24 @@ describe('<star-rating>', function() {
     });
   });
 
-  describe('_createStar()', () => {
-    let element;
+  describe('createStar()', () => {
+    let star;
     beforeEach(async () => {
-      element = await basicFixture();
-      await aTimeout();
+      const element = await basicFixture();
+      await aTimeout(0);
+      star = element.shadowRoot.querySelector('#container .star');
     });
 
     it('Returns svg element', () => {
-      const result = element._createStar();
-      assert.equal(result.nodeName.toLowerCase(), 'svg');
+      assert.equal(star.nodeName.toLowerCase(), 'svg');
     });
 
     it('Has viewBox attribute', () => {
-      const result = element._createStar();
-      assert.equal(result.getAttribute('viewBox'), '0 0 24 24');
+      assert.equal(star.getAttribute('viewBox'), '0 0 24 24');
     });
 
     it('Has tabindex attribute', () => {
-      const result = element._createStar();
-      assert.equal(result.getAttribute('tabindex'), '0');
+      assert.equal(star.getAttribute('tabindex'), '0');
     });
   });
 
@@ -193,7 +192,7 @@ describe('<star-rating>', function() {
     let element;
     beforeEach(async () => {
       element = await basicFixture();
-      await aTimeout();
+      await aTimeout(0);
     });
 
     // This function is called when the element is attached and later on it
@@ -225,7 +224,7 @@ describe('<star-rating>', function() {
     let element;
     beforeEach(async () => {
       element = await selectedFixture();
-      await aTimeout();
+      await aTimeout(0);
     });
 
     it('Calls _ensureStars()', () => {
@@ -243,7 +242,9 @@ describe('<star-rating>', function() {
     });
 
     it('Sets stars selected', () => {
-      const stars = element.shadowRoot.querySelectorAll('#container .star.selected');
+      const stars = element.shadowRoot.querySelectorAll(
+        '#container .star.selected'
+      );
       assert.lengthOf(stars, 3);
     });
 
@@ -259,7 +260,7 @@ describe('<star-rating>', function() {
     let element;
     beforeEach(async () => {
       element = await selectedFixture();
-      await aTimeout();
+      await aTimeout(0);
     });
 
     it('Calls _selectionFromEvent()', () => {
@@ -269,7 +270,7 @@ describe('<star-rating>', function() {
       assert.isTrue(spy.called);
     });
 
-    it('Won\'t call _selectionFromEvent() when readonly', () => {
+    it("Won't call _selectionFromEvent() when readonly", () => {
       element.readonly = true;
       const spy = sinon.spy(element, '_selectionFromEvent');
       element.click();
@@ -296,41 +297,41 @@ describe('<star-rating>', function() {
     let element;
     beforeEach(async () => {
       element = await selectedFixture();
-      await aTimeout();
+      await aTimeout(0);
     });
 
     it('Calls _selectionFromEvent() for Space', () => {
       const spy = sinon.spy(element, '_selectionFromEvent');
-      keyDownOn(element, 'Space');
+      keyDownOn(element, 32, '', ' ');
       element._selectionFromEvent.restore();
       assert.isTrue(spy.called);
     });
 
     it('Calls _selectionFromEvent() for Enter', () => {
       const spy = sinon.spy(element, '_selectionFromEvent');
-      keyDownOn(element, 'Enter');
+      keyDownOn(element, 13, '', 'Enter');
       element._selectionFromEvent.restore();
       assert.isTrue(spy.called);
     });
 
-    it('Won\'t call _selectionFromEvent() for other keys', () => {
+    it('ignores function call for other keys', () => {
       const spy = sinon.spy(element, '_selectionFromEvent');
-      keyDownOn(element, 'S');
+      keyDownOn(element, 83, '', 'S');
       element._selectionFromEvent.restore();
       assert.isFalse(spy.called);
     });
 
-    it('Won\'t call _selectionFromEvent() when readonly', () => {
+    it("Won't call _selectionFromEvent() when readonly", () => {
       element.readonly = true;
       const spy = sinon.spy(element, '_selectionFromEvent');
-      keyDownOn(element, 'Enter');
+      keyDownOn(element, 13, '', 'Enter');
       element._selectionFromEvent.restore();
       assert.isFalse(spy.called);
     });
 
     it('Changes value', () => {
       const star = element.shadowRoot.querySelector('.star');
-      keyDownOn(star, 'Enter');
+      keyDownOn(star, 13, '', 'Enter');
       assert.equal(element.value, 1);
     });
 
@@ -338,7 +339,7 @@ describe('<star-rating>', function() {
       const spy = sinon.spy();
       element.addEventListener('value-changed', spy);
       const star = element.shadowRoot.querySelector('.star');
-      keyDownOn(star, 'Enter');
+      keyDownOn(star, 13, '', 'Enter');
       assert.equal(spy.args[0][0].detail.value, 1);
     });
   });
@@ -347,7 +348,7 @@ describe('<star-rating>', function() {
     let element;
     beforeEach(async () => {
       element = await basicFixture();
-      await aTimeout();
+      await aTimeout(0);
     });
 
     it('Getter returns previously registered handler', () => {
@@ -390,34 +391,36 @@ describe('<star-rating>', function() {
 
   describe('a11y', () => {
     it('normal state', async () => {
-      const element = (await fixture(`<star-rating></star-rating>`));
-      await aTimeout();
+      const element = await fixture(`<star-rating></star-rating>`);
+      await aTimeout(0);
       await assert.isAccessible(element, {
-        ignoredRules: ['aria-toggle-field-name']
+        ignoredRules: ['aria-toggle-field-name'],
       });
     });
 
     it('selected state', async () => {
-      const element = (await fixture(`<star-rating value="2"></star-rating>`));
-      await aTimeout();
+      const element = await fixture(`<star-rating value="2"></star-rating>`);
+      await aTimeout(0);
       await assert.isAccessible(element, {
-        ignoredRules: ['aria-toggle-field-name']
+        ignoredRules: ['aria-toggle-field-name'],
       });
     });
 
     it('readonly state', async () => {
-      const element = (await fixture(`<star-rating readonly></star-rating>`));
-      await aTimeout();
+      const element = await fixture(`<star-rating readonly></star-rating>`);
+      await aTimeout(0);
       await assert.isAccessible(element, {
-        ignoredRules: ['aria-toggle-field-name']
+        ignoredRules: ['aria-toggle-field-name'],
       });
     });
 
     it('readonly selected state', async () => {
-      const element = (await fixture(`<star-rating readonly value="2"></star-rating>`));
-      await aTimeout();
+      const element = await fixture(
+        `<star-rating readonly value="2"></star-rating>`
+      );
+      await aTimeout(0);
       await assert.isAccessible(element, {
-        ignoredRules: ['aria-toggle-field-name']
+        ignoredRules: ['aria-toggle-field-name'],
       });
     });
   });

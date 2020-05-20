@@ -11,6 +11,36 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
+/* eslint-disable no-plusplus */
+/* eslint-disable no-bitwise */
+/**
+ * Creates an SVG image for a star
+ * @return {SVGElement} an SVG element with a star
+ */
+function createStar() {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('tabindex', '0');
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  svg.setAttribute('focusable', 'true');
+  svg.setAttribute('role', 'radio');
+  svg.style.cssText = 'display: block;';
+  svg.innerHTML = `<g>
+    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+  </g>`;
+  return svg;
+}
+
+function svgFromEvent(e) {
+  const path = (e.composedPath && e.composedPath()) || e.path;
+  for (let i = 0, len = path.length; i < len; i++) {
+    if (path[i].nodeType === 1 && path[i].nodeName.toLowerCase() === 'svg') {
+      return path[i];
+    }
+  }
+  return undefined;
+}
+
 /**
  * A web component written in plain JavaScript to render a 5 star rating.
  *
@@ -33,9 +63,6 @@ the License.
  * `--star-rating-unselected-color` | Icon color when not selected | `#eeeeee`
  * `--star-rating-selected-color` | Icon color when selected | `#fdd835`
  * `--star-rating-active-color` | Icon color when active (focus, hover) | `#e0be25`
- *
- * @customElement
- * @demo demo/index.html
  */
 export class StarRating extends HTMLElement {
   static get template() {
@@ -83,20 +110,20 @@ export class StarRating extends HTMLElement {
   }
 
   set value(value) {
-    if (value === undefined || value === null) {
+    let typedValue = value;
+    if (typedValue === undefined || typedValue === null) {
       this.removeAttribute('value');
-      value = 0;
+      typedValue = 0;
     } else {
-      if (isNaN(value)) {
-        value = 0;
-      } else {
-        value = Number(value);
+      typedValue = Number(typedValue);
+      if (Number.isNaN(typedValue)) {
+        typedValue = 0;
       }
-      if (this.getAttribute('value') !== String(value)) {
-        this.setAttribute('value', String(value));
+      if (this.getAttribute('value') !== String(typedValue)) {
+        this.setAttribute('value', String(typedValue));
       }
     }
-    this.__data__.value = value;
+    this.__data__.value = typedValue;
     this._render();
   }
 
@@ -105,18 +132,19 @@ export class StarRating extends HTMLElement {
   }
 
   set readonly(value) {
-    if (value === '' || value === 'true' || value === true) {
-      value = true;
+    let typedValue = value;
+    if (typedValue === '' || typedValue === 'true' || typedValue === true) {
+      typedValue = true;
       if (!this.hasAttribute('readonly')) {
         this.setAttribute('readonly', '');
       }
     } else {
-      value = false;
+      typedValue = false;
       if (this.hasAttribute('readonly')) {
         this.removeAttribute('readonly');
       }
     }
-    this.__data__.readonly = value;
+    this.__data__.readonly = typedValue;
     this._render();
   }
 
@@ -190,19 +218,15 @@ export class StarRating extends HTMLElement {
         if (!star.classList.contains('selected')) {
           star.classList.add('selected');
         }
-      } else {
-        if (star.classList.contains('selected')) {
-          star.classList.remove('selected');
-        }
+      } else if (star.classList.contains('selected')) {
+        star.classList.remove('selected');
       }
       if (i === selected) {
         if (star.getAttribute('aria-checked') !== 'true') {
           star.setAttribute('aria-checked', 'true');
         }
-      } else {
-        if (star.getAttribute('aria-checked') !== 'false') {
-          star.setAttribute('aria-checked', 'false');
-        }
+      } else if (star.getAttribute('aria-checked') !== 'false') {
+        star.setAttribute('aria-checked', 'false');
       }
       if (star.getAttribute('tabindex') !== String(tabindex)) {
         star.setAttribute('tabindex', String(tabindex));
@@ -217,25 +241,11 @@ export class StarRating extends HTMLElement {
     this.__data__.hasStars = true;
     const container = this.shadowRoot.querySelector('#container');
     for (let i = 0; i < 5; i++) {
-      const item = this._createStar();
+      const item = createStar();
       item.classList.add('star');
-      item.dataset.index = i;
+      item.dataset.index = String(i);
       container.appendChild(item);
     }
-  }
-
-  _createStar() {
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('tabindex', '0');
-    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    svg.setAttribute('focusable', 'true');
-    svg.setAttribute('role', 'radio');
-    svg.style.cssText = 'display: block;';
-    svg.innerHTML = `<g>
-      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
-    </g>`;
-    return svg;
   }
 
   _clickHandler(e) {
@@ -246,7 +256,7 @@ export class StarRating extends HTMLElement {
   }
 
   _keydownHandler(e) {
-    if (this.readonly || e.code !== 'Space' && e.code !== 'Enter') {
+    if (this.readonly || (e.key !== ' ' && e.key !== 'Enter')) {
       return;
     }
     e.preventDefault();
@@ -255,22 +265,13 @@ export class StarRating extends HTMLElement {
   }
 
   _selectionFromEvent(e) {
-    const img = this._svgFromEvent(e);
+    const img = svgFromEvent(e);
     if (!img) {
       return;
     }
     const i = Number(img.dataset.index) + 1;
     this.value = i;
     this._notifyValueChanged(i);
-  }
-
-  _svgFromEvent(e) {
-    const path = (e.composedPath && e.composedPath()) || e.path;
-    for (let i = 0, len = path.length; i < len; i++) {
-      if (path[i].nodeType === 1 && path[i].nodeName.toLowerCase() === 'svg') {
-        return path[i];
-      }
-    }
   }
 
   _notifyValueChanged(value) {

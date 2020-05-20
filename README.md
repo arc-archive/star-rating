@@ -1,6 +1,6 @@
 [![Published on NPM](https://img.shields.io/npm/v/@advanced-rest-client/star-rating.svg)](https://www.npmjs.com/package/@advanced-rest-client/star-rating)
 
-[![Build Status](https://travis-ci.org/advanced-rest-client/star-rating.svg?branch=stage)](https://travis-ci.org/advanced-rest-client/star-rating)
+[![Build Status](https://travis-ci.com/advanced-rest-client/star-rating.svg)](https://travis-ci.com/advanced-rest-client/star-rating)
 
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/advanced-rest-client/star-rating)
 
@@ -25,10 +25,6 @@ Element can be styled using CSS variables
 }
 </style>
 ```
-
-### API components
-
-This components is a part of [API components ecosystem](https://elements.advancedrestclient.com/)
 
 ## Usage
 
@@ -102,7 +98,7 @@ class SampleElement extends PolymerElement {
 customElements.define('sample-element', SampleElement);
 ```
 
-### Development
+## Development
 
 ```sh
 git clone https://github.com/advanced-rest-client/star-rating
