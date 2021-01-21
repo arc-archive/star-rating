@@ -20,7 +20,7 @@ export {StarRating};
  * By default it is an interactive element where the user can change the selection.
  * Add `readonly` attribute/JS property to disable this behavior.
  *
- * ## Examle
+ * ## Example
  *
  * ```html
  * <star-rating value="3"></star-rating>
@@ -36,11 +36,21 @@ export {StarRating};
  * `--star-rating-unselected-color` | Icon color when not selected | `#eeeeee`
  * `--star-rating-selected-color` | Icon color when selected | `#fdd835`
  * `--star-rating-active-color` | Icon color when active (focus, hover) | `#e0be25`
+ * 
+ * @fires change When the value is set by the user.
  */
 declare class StarRating extends HTMLElement {
-  value: any;
-  readonly: any;
-  onchange: any;
+  /**
+   * @attribute
+   */
+  value: number|string;
+  /**
+   * @attribute
+   */
+  readOnly?: boolean;
+  __data__: any;
+  __rendering?: boolean;
+  onchange: EventListener;
   connectedCallback(): void;
   disconnectedCallback(): void;
   attributeChangedCallback(name: any, oldValue: any, newValue: any): void;

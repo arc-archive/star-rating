@@ -1,4 +1,4 @@
-import { fixture, assert, aTimeout } from '@open-wc/testing';
+import { fixture, assert, aTimeout, nextFrame } from '@open-wc/testing';
 import sinon from 'sinon';
 import {
   click,
@@ -6,26 +6,37 @@ import {
 } from '@polymer/iron-test-helpers/mock-interactions.js';
 import '../star-rating.js';
 
+/** @typedef {import('../index').StarRating} StarRating */
+
 describe('<star-rating>', () => {
+  /**
+   * @return {Promise<StarRating>} 
+   */
   async function basicFixture() {
     return fixture(`<star-rating></star-rating>`);
   }
 
+  /**
+   * @return {Promise<StarRating>} 
+   */
   async function selectedFixture() {
     return fixture(`<star-rating value="3"></star-rating>`);
   }
 
+  /**
+   * @return {Promise<StarRating>} 
+   */
   async function readonlyFixture() {
     return fixture(`<star-rating readonly></star-rating>`);
   }
 
   describe('Constructor', () => {
-    let element;
+    let element = /** @type StarRating */ (null);
     beforeEach(async () => {
       element = await basicFixture();
     });
 
-    it('Sets __data__ proeprty', () => {
+    it('Sets __data__ property', () => {
       assert.typeOf(element.__data__, 'object');
     });
 
@@ -104,40 +115,41 @@ describe('<star-rating>', () => {
     });
   });
 
-  describe('readonly setter/getter', () => {
+  describe('readOnly setter/getter', () => {
     it('Attribute sets the property', async () => {
       const element = await readonlyFixture();
-      assert.isTrue(element.readonly);
+      await nextFrame();
+      assert.isTrue(element.readOnly);
     });
 
     it('Getter returns default value', async () => {
       const element = await basicFixture();
-      assert.isFalse(element.readonly);
+      assert.isFalse(element.readOnly);
     });
 
     it('Setting the property set the attribute', async () => {
       const element = await basicFixture();
-      element.readonly = true;
+      element.readOnly = true;
       assert.isTrue(element.hasAttribute('readonly'));
     });
 
     it('False removes the attribute', async () => {
       const element = await readonlyFixture();
-      element.readonly = false;
+      element.readOnly = false;
       assert.isFalse(element.hasAttribute('readonly'));
     });
 
     it('Calls _render() when value change', async () => {
       const element = await basicFixture();
       const spy = sinon.spy(element, '_render');
-      element.readonly = true;
+      element.readOnly = true;
       element._render.restore();
       assert.isTrue(spy.called);
     });
   });
 
   describe('_render()', () => {
-    let element;
+    let element = /** @type StarRating */ (null);
     beforeEach(async () => {
       element = await basicFixture();
       await aTimeout(0);
@@ -189,7 +201,7 @@ describe('<star-rating>', () => {
   });
 
   describe('_ensureStars()', () => {
-    let element;
+    let element = /** @type StarRating */ (null);
     beforeEach(async () => {
       element = await basicFixture();
       await aTimeout(0);
@@ -221,7 +233,7 @@ describe('<star-rating>', () => {
   });
 
   describe('_doRender()', () => {
-    let element;
+    let element = /** @type StarRating */ (null);
     beforeEach(async () => {
       element = await selectedFixture();
       await aTimeout(0);
@@ -249,7 +261,7 @@ describe('<star-rating>', () => {
     });
 
     it('Updates tabindex', () => {
-      element.readonly = true;
+      element.readOnly = true;
       element._doRender();
       const star = element.shadowRoot.querySelector('#container .star');
       assert.equal(star.getAttribute('tabindex'), '-1');
@@ -257,7 +269,7 @@ describe('<star-rating>', () => {
   });
 
   describe('_clickHandler()', () => {
-    let element;
+    let element = /** @type StarRating */ (null);
     beforeEach(async () => {
       element = await selectedFixture();
       await aTimeout(0);
@@ -270,8 +282,8 @@ describe('<star-rating>', () => {
       assert.isTrue(spy.called);
     });
 
-    it("Won't call _selectionFromEvent() when readonly", () => {
-      element.readonly = true;
+    it("Won't call _selectionFromEvent() when readOnly", () => {
+      element.readOnly = true;
       const spy = sinon.spy(element, '_selectionFromEvent');
       element.click();
       element._selectionFromEvent.restore();
@@ -294,7 +306,7 @@ describe('<star-rating>', () => {
   });
 
   describe('_clickHandler()', () => {
-    let element;
+    let element = /** @type StarRating */ (null);
     beforeEach(async () => {
       element = await selectedFixture();
       await aTimeout(0);
@@ -321,8 +333,8 @@ describe('<star-rating>', () => {
       assert.isFalse(spy.called);
     });
 
-    it("Won't call _selectionFromEvent() when readonly", () => {
-      element.readonly = true;
+    it("Won't call _selectionFromEvent() when readOnly", () => {
+      element.readOnly = true;
       const spy = sinon.spy(element, '_selectionFromEvent');
       keyDownOn(element, 13, '', 'Enter');
       element._selectionFromEvent.restore();
@@ -345,7 +357,7 @@ describe('<star-rating>', () => {
   });
 
   describe('onchange', () => {
-    let element;
+    let element = /** @type StarRating */ (null);
     beforeEach(async () => {
       element = await basicFixture();
       await aTimeout(0);
@@ -406,17 +418,17 @@ describe('<star-rating>', () => {
       });
     });
 
-    it('readonly state', async () => {
-      const element = await fixture(`<star-rating readonly></star-rating>`);
+    it('readOnly state', async () => {
+      const element = await fixture(`<star-rating readOnly></star-rating>`);
       await aTimeout(0);
       await assert.isAccessible(element, {
         ignoredRules: ['aria-toggle-field-name'],
       });
     });
 
-    it('readonly selected state', async () => {
+    it('readOnly selected state', async () => {
       const element = await fixture(
-        `<star-rating readonly value="2"></star-rating>`
+        `<star-rating readOnly value="2"></star-rating>`
       );
       await aTimeout(0);
       await assert.isAccessible(element, {

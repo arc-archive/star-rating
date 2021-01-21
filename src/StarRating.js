@@ -45,9 +45,9 @@ function svgFromEvent(e) {
  * A web component written in plain JavaScript to render a 5 star rating.
  *
  * By default it is an interactive element where the user can change the selection.
- * Add `readonly` attribute/JS property to disable this behavior.
+ * Add `readOnly` attribute/JS property to disable this behavior.
  *
- * ## Examle
+ * ## Example
  *
  * ```html
  * <star-rating value="3"></star-rating>
@@ -131,7 +131,7 @@ export class StarRating extends HTMLElement {
     return this.__data__.value;
   }
 
-  set readonly(value) {
+  set readOnly(value) {
     let typedValue = value;
     if (typedValue === '' || typedValue === 'true' || typedValue === true) {
       typedValue = true;
@@ -144,18 +144,24 @@ export class StarRating extends HTMLElement {
         this.removeAttribute('readonly');
       }
     }
-    this.__data__.readonly = typedValue;
+    this.__data__.readOnly = typedValue;
     this._render();
   }
 
-  get readonly() {
-    return this.__data__.readonly || false;
+  get readOnly() {
+    return this.__data__.readOnly || false;
   }
 
+  /**
+   * @returns {EventListener}
+   */
   get onchange() {
     return this._onchange;
   }
 
+  /**
+   * @param {EventListener} value
+   */
   set onchange(value) {
     if (this._onchange) {
       this.removeEventListener('value-changed', this._onchange);
@@ -191,8 +197,13 @@ export class StarRating extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (this[name] !== newValue) {
-      this[name] = newValue;
+    let prop;
+    switch (name) {
+      case 'readonly': prop = 'readOnly'; break;
+      default: prop = name; 
+    }
+    if (this[prop] !== newValue) {
+      this[prop] = newValue;
     }
   }
 
@@ -211,7 +222,7 @@ export class StarRating extends HTMLElement {
     this._ensureStars();
     const stars = this.shadowRoot.querySelectorAll('#container .star');
     const selected = (this.value >>> 0) - 1;
-    const tabindex = this.readonly ? -1 : 0;
+    const tabindex = this.readOnly ? -1 : 0;
     for (let i = 0; i < 5; i++) {
       const star = stars[i];
       if (i <= selected) {
@@ -249,14 +260,14 @@ export class StarRating extends HTMLElement {
   }
 
   _clickHandler(e) {
-    if (this.readonly) {
+    if (this.readOnly) {
       return;
     }
     this._selectionFromEvent(e);
   }
 
   _keydownHandler(e) {
-    if (this.readonly || (e.key !== ' ' && e.key !== 'Enter')) {
+    if (this.readOnly || (e.key !== ' ' && e.key !== 'Enter')) {
       return;
     }
     e.preventDefault();
@@ -276,13 +287,14 @@ export class StarRating extends HTMLElement {
 
   _notifyValueChanged(value) {
     this.dispatchEvent(new CustomEvent('value-changed', { detail: { value } }));
+    this.dispatchEvent(new CustomEvent('change'));
   }
 
   /**
    * Dispatched when the user make a new selection.
    *
    * Note: The event does not bubble.
-   * Note: When value is changed programatically the event is not dispatched.
+   * Note: When value is changed programmatically the event is not dispatched.
    *
    * @event value-changed
    * @param {Number} value Current value.
