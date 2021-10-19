@@ -1,10 +1,8 @@
-[![Published on NPM](https://img.shields.io/npm/v/@advanced-rest-client/star-rating.svg)](https://www.npmjs.com/package/@advanced-rest-client/star-rating)
+# DEPRECATED
 
-[![Build Status](https://travis-ci.com/advanced-rest-client/star-rating.svg)](https://travis-ci.com/advanced-rest-client/star-rating)
+Use the `@anypoint-web-components/awc` module instead.
 
-[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/advanced-rest-client/star-rating)
-
-## &lt;star-rating&gt;
+-----
 
 A component that renders stars for rating.
 

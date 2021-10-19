@@ -38,6 +38,7 @@ export {StarRating};
  * `--star-rating-active-color` | Icon color when active (focus, hover) | `#e0be25`
  * 
  * @fires change When the value is set by the user.
+ * @deprecated Use the `@anypoint-web-components/awc` module instead.
  */
 declare class StarRating extends HTMLElement {
   /**
